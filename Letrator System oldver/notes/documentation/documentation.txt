@@ -1,0 +1,74 @@
+//----------------------OUTLINE FUNCTIONS----------------------//
+
+Script de outline para textos, sprites e surfaces.
+Criado por Krug e compartilhado no servidor da None Class
+
+
+COMO USAR:
+1 - Chame a funcao outline_ini() no evento de create do objeto que usará as funcoes de outline.
+2 - Chame o macro OUTLINE_START para iniciar o shader.
+3 - Chame as fucoes de outline_set de acordo com o que deseja desenhar.
+4 - Use as funcoes de draw correspondentes ao tipo do ultimo outline_set chamado.
+5 - Chame o macro OUTLINE_END para resetar o shader.
+
+Exemplo:
+>>CREATE EVENT<<
+
+	|	outline_ini();
+
+>>DRAW EVENT<<
+
+	|	OUTLINE_START;
+	|	draw_set_font(my_font);
+	|	outline_set_text(1, OL_ALL)
+	|	draw_text(x, y, "my text");
+	|	draw_set_font(-1);
+	|	OUTLINE_END;
+
+
+
+IMPORTANTE:
+> Ao usar as funcoes de outline_set_text(), É NECESSÁRIO setar uma fonte diferente 
+da fonte padrao do Gamemaker antes da execucao da funcao.
+
+> Para que as funcoes de outline_set_sprite() funcionem corretamente, a opcao
+"Automatically Crop" deve estar desativada para o Texture Group a qual ele pertence.
+
+> A fonte utilizada deve estar com o Anti-aliasing desativado para obter um melhor resultado.
+
+> As funcoes outline_set_surface() devem ser chamadas quando a SURFACE for desenhada, e nao enquanto
+estiver desenhando na surface (a menos que seja a intencao).
+
+
+
+TIPO DE ARGUMENTOS:
+> thickness: valor flutuante de 0.0 a 1.0
+> directions: array com 8 entradas, cada uma representando uma direcao.
+
+O argumento pode ser um dos macros OL_ seguido da sigla da respectiva direcao (bottom left, top right, etc).
+De forma visual, o array é representado assim:
+
+	|	directions = [
+	|		1, 1, 1,
+	|		1,    1,
+	|		1, 1, 1,
+	|	];
+
+O espaco vazio no meio é o alvo, e cada indice é um booleano que controla cada direcao do outline individualmente.
+
+
+
+Limitacoes:
+> Aplicar o shader em desenhos onde a posicao e/ou tamanho sao pontos flutuantes, ou sofrem 
+alteracao interpolada, pode causas artefatos devido a sprites próximos na texture 
+page (mais comum nas funcoes de texto). Uma possível solucao é desenhar o 
+texto/sprite em uma surface, e entao desenhar essa surface com o shader.
+
+> O outline é desenhado dentro dos limites da sprite. Para que o efeito funcione ao redor do desenho, é
+necessário pelo menos 1 pixel de espaco entre o desenho e a borda do canvas.
+O mesmo problema pode ocorrer em certas fontes dependendo da forma com que o Gamemaker 
+gera a texture page. Nesse caso, a solucao pode ser desenhar o texto em uma surface, e 
+entao desenhar essa surface com o shader.
+
+> Devido ao outline ser do tamanho máximo de um pixel de expessura, pode nao funcionar bem
+em fontes que possuam maior quantidade de detahes
