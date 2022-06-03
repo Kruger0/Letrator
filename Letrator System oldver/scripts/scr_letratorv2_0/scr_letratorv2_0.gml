@@ -72,14 +72,29 @@ function letrator_add_text(_font, _string, _sep, _w = infinity, _col, _alph) con
 	var _chr_scl = _scale
 	var _spr_scl = _scale
 	var _char_w	= 0
-	var _char_h = string_height("I")
+	var _char_h = 0
 
 	for (var i = 0; i < str_size; ++i) {
 		//atualiza as variáveis de cada iteracao
-		_char	= string_copy(_string, i+1, 1)					//pega a letra no inicio do loop
-		_next_chr = string_copy(_string, i+2, 1)				//caratere afrente do atual	
-		_xoff = 0
-		_yoff = 0
+		_char		= string_copy(_string, i+1, 1)				//pega a letra no inicio do loop
+		_next_chr	= string_copy(_string, i+2, 1)				//caratere afrente do atual	
+		_xoff		= 0
+		_yoff		= 0
+		_char_w		= string_width(_char)*_scale				//pega a largura do caractere atual
+		_char_h		= string_height(_char)*_scale				//pega o tamanho do caractere atual
+		
+		
+		//quebra de linha automática. TODO: propper wrap
+		if (_xx > _w) {
+			_xx = 0
+			_yy += _char_h+_sep
+			if (_char == " ") {
+				_string = string_delete(_string, i+1, 1)
+				_char = string_copy(_string, i+1, 1)
+				str_size -= 1
+				_char_w	= string_width(_char)*_scale
+			}
+		}
 			
 		if (_char == "[") {
 			if (_next_chr == "[") {
@@ -127,7 +142,10 @@ function letrator_add_text(_font, _string, _sep, _w = infinity, _col, _alph) con
 					//casos de comando com valor
 					switch (_coma_cmd) {
 						case "alpha":	_alpha = _coma_val		break;
-						case "scale":	_chr_scl = _coma_val		break;
+						case "scale":
+							_chr_scl = _coma_val
+							_scale = _chr_scl
+						break;
 					}
 				} else {
 					//se nao for um comando contendo # e nem virgula, removo os colchetes e aplico o case
@@ -138,7 +156,6 @@ function letrator_add_text(_font, _string, _sep, _w = infinity, _col, _alph) con
 						//-------------------------|| slash commands ||-------------------------					
 						case "/n":
 							_xx		= 0
-							_char_w = 0
 							_yy		+= _char_h+_sep
 						break;
 						case "/a":
@@ -146,12 +163,14 @@ function letrator_add_text(_font, _string, _sep, _w = infinity, _col, _alph) con
 						case "/c":
 						case "/color":	_color = default_color	break;
 						case "/s":
-						case "/scale":	_scale = default_scale	break;
+						case "/scale":
+							_chr_scl = default_scale
+							_scale = _chr_scl
+						break;
 						case "/f":
 						case "/font":	_fnt   = default_font
 							if (_fnt != draw_get_font()) {
 								draw_set_font(_fnt)	//se a fonte detectada nao for a atual do frame, ele troca pra nova
-								_char_h = string_height("I")
 							}
 						break;
 						
@@ -208,20 +227,19 @@ function letrator_add_text(_font, _string, _sep, _w = infinity, _col, _alph) con
 									case asset_sprite://--------------------------------------------------|| sprite
 										//ajust sprite coords
 										var _xscl, _yscl;
-										_xscl = _char_w/sprite_get_width(_asset_index)
-										_yscl = _char_h/sprite_get_height(_asset_index)
+										_xscl = _char_w*_scale/sprite_get_width(_asset_index)
+										_yscl = _char_h*_scale/sprite_get_height(_asset_index)
 										_spr_scl = max(_xscl, _yscl)
 										
-										_char_w = _char_h
 										_type = str_type.sprite								
-										_sprite = _asset_index																			
+										_sprite = _asset_index
 									break;
 									
 									case asset_font://--------------------------------------------------|| font
 										_fnt = _asset_index									
 										if (_fnt != draw_get_font()) {
 											draw_set_font(_fnt)	//se a fonte detectada nao for a atual do frame, ele troca pra nova
-											_char_h = string_height("I")
+											_char_h = string_height(_char)*_scale
 										}
 									break;
 								}
@@ -248,21 +266,12 @@ function letrator_add_text(_font, _string, _sep, _w = infinity, _col, _alph) con
 			case str_type.sprite:
 				_data = _sprite
 				_scale = _spr_scl
-				_xoff = -0
+				//_xoff = 0
 			break;
 		}
 		
-		//quebra de linha automática. TODO: propper wrap
-		_xx += _char_w
-		if (_xx > _w) {
-			_xx = 0
-			_yy += _char_h+_sep
-			if (_char == " ") {
-				_string = string_delete(_string, i+1, 1)
-				_char = string_copy(_string, i+1, 1)
-				str_size -= 1
-			}
-		}	
+		
+
 		clean_string+=_char	//not used yet
 		
 		//add the individual values on the array
@@ -278,13 +287,15 @@ function letrator_add_text(_font, _string, _sep, _w = infinity, _col, _alph) con
 		str_arr[i][str_data.alpha]	= _alpha
 		str_arr[i][str_data.fx]		= _fx
 		str_arr[i][str_data.fnt]	= _fnt
-
-		//_scale = default_scale
-		_char_w = string_width(_char)	//pega a largura do caractere atual pra usar a variável na próxima iteracao
-		_type	= str_type.char									//seta o tipo padrao como char	
+		
+		_type	= str_type.char	
+		_xx += _char_w
+	//seta o tipo padrao como char	
 	}
 	
 	draw_set_font(-1) //reseta a fonte após as iteracoes
+	
+	show_debug_message(str_arr)
 	
 	static draw = function(_x, _y) {
 		for (var i = 0; i < str_size; i++) {		
@@ -364,7 +375,18 @@ function letrator_add_text(_font, _string, _sep, _w = infinity, _col, _alph) con
 					)
 				break;
 			}
-		}
+			draw_rectangle_color(
+				_x+str_arr[i][str_data.x],
+				_y+str_arr[i][str_data.y],
+				_x+str_arr[i][str_data.x]+string_width(str_arr[i][str_data.value])*str_arr[i][str_data.scl]-1,
+				_y+str_arr[i][str_data.y]+string_height(str_arr[i][str_data.value])*str_arr[i][str_data.scl],
+				c_lime,
+				c_lime,
+				c_lime,
+				c_lime,
+				true
+			)
+		}//end loop
 		draw_set_font(-1)
 	}
 	

@@ -20,7 +20,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA[/n]
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA[/n]
 "
 
-var _str = @"
+var _str1 = @"
 Texto [wave]animado!!![/n][/wave]
 [#ff0000]Cores [#0090ff]muito[#40ff40] doidas [/n]
 [/c][rainbow]Arround the world [/rainbow] [/n]
@@ -56,13 +56,8 @@ OPQRSTUVWXYZ [/n]
 [/clear][/f][wobble][#ff5a00][fnt_05]Let's Groove
 "
 
-var _str5 = @"
-Voce a tem 10[c_yellow] moedas!!![/n][/c]
-Parece bastante, [rainbow][wave]nao eh mesmo?[/clear][/n]
-[shake]Realmente eh.......[/n][/clear]
-Aqui vai uma [c_aqua][wobble]foto[/wobble][/c] de uma![/n]
-[scale,2]Elas sao [spr_coin] [spr_coin]  mais ou menos assim[/n]
-"
+var _str5 = "[fnt_02][spr_coin] RATINHOO!![/n][scale,.4]RATINHOO!![/n][scale,.5]RATINHOO!![/n][scale,.6]RATINHOOOOO[scale,.4]OOOOO[scale,.8]OO[scale,.6]OOOO!![/n][scale,.7][rainbow][fnt_05]RATINHOO!![/n][scale,.8]RATINHOO!![/n][scale,.4]RATINHOO!![/n][scale,.8][fnt_01][/rainbow][#ff4444]RATINHOO!![/n][scale,.7]"
+var _str6 = "[fnt_02]uepa"
 text[0] = new letrator_add_text(fnt_01, _str5, 2,, c_white, 1)
 
 //show_message(real("c_red"))

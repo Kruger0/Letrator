@@ -1,10 +1,10 @@
 #region CAMERA SETTINGS
 cam = view_camera[0]
-cam_scale = 6
+cam_scale = 4
 game_width = 1920/cam_scale
 game_height = 1080/cam_scale
 
-window_scale = 3
+window_scale = 2
 window_set_size(game_width*window_scale, game_height*window_scale);
 
 camera_set_view_size(cam, game_width, game_height)

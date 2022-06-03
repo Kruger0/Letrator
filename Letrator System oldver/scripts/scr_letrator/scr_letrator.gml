@@ -1,11 +1,5 @@
 
 
-
-function draw_set_align(_horizontal, _vertical) {
-	draw_set_halign(_horizontal)
-	draw_set_valign(_vertical)
-}
-
 /*
 function create_tdext_sys(_string, _sep, _w, _color, _alpha) constructor {
 	static text_sys_counter = 0;
