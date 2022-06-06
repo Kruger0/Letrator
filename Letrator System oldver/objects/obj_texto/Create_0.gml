@@ -57,7 +57,7 @@ OPQRSTUVWXYZ [/n]
 "
 
 var _str5 = "[fnt_02][spr_coin] RATINHOO!![/n][scale,.4]RATINHOO!![/n][scale,.5]RATINHOO!![/n][scale,.6]RATINHOOOOO[scale,.4]OOOOO[scale,.8]OO[scale,.6]OOOO!![/n][scale,.7][rainbow][fnt_05]RATINHOO!![/n][scale,.8]RATINHOO!![/n][scale,.4]RATINHOO!![/n][scale,.8][fnt_01][/rainbow][#ff4444]RATINHOO!![/n][scale,.7]"
-var _str6 = "[fnt_02]uepa"
-text[0] = new letrator_add_text(fnt_01, _str5, 2,, c_white, 1)
+var _str6 = "[scale,.4][rainbow][wave]The quick brow fox jump over the lazy dog"
+text[0] = new letrator_add_text(fnt_01, _str6, 2,, c_white, 1)
 
 //show_message(real("c_red"))

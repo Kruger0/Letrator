@@ -295,7 +295,7 @@ function letrator_add_text(_font, _string, _sep, _w = infinity, _col, _alph) con
 	
 	draw_set_font(-1) //reseta a fonte após as iteracoes
 	
-	show_debug_message(str_arr)
+	//show_debug_message(str_arr)
 	
 	static draw = function(_x, _y) {
 		for (var i = 0; i < str_size; i++) {		
