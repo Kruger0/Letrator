@@ -68,37 +68,70 @@ function letrator_add_text(_font, _string, _sep, _w = infinity, _col, _alph) con
 	var _sprite;
 	var _sound;
 	var _next_chr;
+	var _prev_chr;
 	
 	var _chr_scl = _scale
 	var _spr_scl = _scale
 	var _char_w	= 0
 	var _char_h = 0
+	
+	var _fx = 0
 
 	for (var i = 0; i < str_size; ++i) {
 		//atualiza as variáveis de cada iteracao
 		_char		= string_copy(_string, i+1, 1)				//pega a letra no inicio do loop
-		_next_chr	= string_copy(_string, i+2, 1)				//caratere afrente do atual	
+		_next_chr	= string_copy(_string, i+2, 1)				//caratere afrente do atual
+		_prev_chr	= i > 0 ? string_copy(_string, i, 1) : ""				//caratere afrente do atual
 		_xoff		= 0
 		_yoff		= 0
 		_char_w		= string_width(_char)*_scale				//pega a largura do caractere atual
-		_char_h		= string_height(_char)*_scale				//pega o tamanho do caractere atual
+		_char_h		= string_height(_char)*_scale				//pega o tamanho do caractere atual		
 		
-		
-		//quebra de linha automática. TODO: propper wrap
-		if (_xx > _w) {
-			_xx = 0
-			_yy += _char_h+_sep
-			if (_char == " ") {
+		//quebra de linha automática.
+		if (_xx > _w) {			
+			var _yinc = _char_h+_sep
+			if (_char != " "){ //se ta no meio de uma palavra
+				var _spc = ""
+				var _wrap_cnt = 0
+				var _wrappable = true
+				while (_spc != " ") { //vai indo pra tras até achar o fim da palavra
+					_spc = string_copy(_string, i-_wrap_cnt, 1)
+					_wrap_cnt++
+					if (_wrap_cnt > floor(_w/_char_w)) { //se a palavra é muito grande, a contagem zera
+						_wrap_cnt = 0;
+						_wrappable = false
+						break;
+					}
+				}
+			}
+			
+			if (_wrappable) {
+				i -= _wrap_cnt
+			} else { //to num espaco
+				str_size -= 1
 				_string = string_delete(_string, i+1, 1)
 				_char = string_copy(_string, i+1, 1)
-				str_size -= 1
 				_char_w	= string_width(_char)*_scale
+				_char_h	= string_height(_char)*_scale
 			}
-		}
+			_xx = 0
+			_yy += _yinc
 			
+			//str_size -= 1
+			//_string = string_delete(_string, i+1, 1)
+			//_char = string_copy(_string, i+1, 1)
+			//_char_w	= string_width(_char)*_scale
+			//_char_h	= string_height(_char)*_scale
+			
+			//_xx = 0
+			//_yy += _char_h+_sep
+		}		
+		
+		
+		//deteccao de comando e início do parset TODO: arrumar a deteccao de [[ dupla
 		if (_char == "[") {
 			if (_next_chr == "[") {
-				//show_message("dois [ juntos")
+				show_message("dois [ juntos")
 			} else {
 				//inicia variáveis do parser
 				var _cmd_str = ""
@@ -198,23 +231,25 @@ function letrator_add_text(_font, _string, _sep, _w = infinity, _col, _alph) con
 						
 						//-------------------------|| set fx ||-------------------------	
 						
-						case "rainbow": _fx = bitmap_write(_fx, str_fx.rainbow, true)			break;
-						case "wave":	_fx = bitmap_write(_fx, str_fx.wave, true)				break;
-						case "shake":	_fx = bitmap_write(_fx, str_fx.shake, true)				break;
-						case "wobble":	_fx = bitmap_write(_fx, str_fx.wobble, true)			break;
-						case "blink":	_fx = bitmap_write(_fx, str_fx.blink, true)				break;
-						case "pulse":	_fx = bitmap_write(_fx, str_fx.pulse, true)				break;
+						case "rainbow":		_fx = bitmap_write(_fx, str_fx.rainbow, true)		break;
+						case "wave":		_fx = bitmap_write(_fx, str_fx.wave,	true)		break;
+						case "shake":		_fx = bitmap_write(_fx, str_fx.shake,	true)		break;
+						case "wobble":		_fx = bitmap_write(_fx, str_fx.wobble,	true)		break;
+						case "blink":		_fx = bitmap_write(_fx, str_fx.blink,	true)		break;
+						case "pulse":		_fx = bitmap_write(_fx, str_fx.pulse,	true)		break;
+						case "fade":		_fx = bitmap_write(_fx, str_fx.fade,	true)		break;
 						
 						//-------------------------|| reset fx ||-------------------------	
 						
-						case "/clear":	_fx = 0													break;
+						case "/clear":		_fx = 0												break;
 						
-						case "/rainbow": _fx = bitmap_write(_fx, str_fx.rainbow, false)			break;
-						case "/wave":	_fx = bitmap_write(_fx, str_fx.wave, false)				break;
-						case "/shake":	_fx = bitmap_write(_fx, str_fx.shake, false)			break;
-						case "/wobble":	_fx = bitmap_write(_fx, str_fx.wobble, false)			break;
-						case "/blink":	_fx = bitmap_write(_fx, str_fx.blink, false)			break;
-						case "/pulse":	_fx = bitmap_write(_fx, str_fx.pulse, false)			break;
+						case "/rainbow":	_fx = bitmap_write(_fx, str_fx.rainbow, false)		break;
+						case "/wave":		_fx = bitmap_write(_fx, str_fx.wave,	false)		break;
+						case "/shake":		_fx = bitmap_write(_fx, str_fx.shake,	false)		break;
+						case "/wobble":		_fx = bitmap_write(_fx, str_fx.wobble,	false)		break;
+						case "/blink":		_fx = bitmap_write(_fx, str_fx.blink,	false)		break;
+						case "/pulse":		_fx = bitmap_write(_fx, str_fx.pulse,	false)		break;
+						case "/fade":		_fx = bitmap_write(_fx, str_fx.fade,	false)		break;
 						
 						//-------------------------|| strings nao-específicas ||-------------------------	
 						
@@ -270,8 +305,6 @@ function letrator_add_text(_font, _string, _sep, _w = infinity, _col, _alph) con
 			break;
 		}
 		
-		
-
 		clean_string+=_char	//not used yet
 		
 		//add the individual values on the array
@@ -285,25 +318,25 @@ function letrator_add_text(_font, _string, _sep, _w = infinity, _col, _alph) con
 		str_arr[i][str_data.ang]	= _ang
 		str_arr[i][str_data.col]	= _color
 		str_arr[i][str_data.alpha]	= _alpha
-		str_arr[i][str_data.fx]		= _fx
+		str_arr[i][str_data.fx]		= bitmap_array(_fx, 8)	
 		str_arr[i][str_data.fnt]	= _fnt
 		
 		_type	= str_type.char	
 		_xx += _char_w
-	//seta o tipo padrao como char	
-	}
-	
+		
+	}//end of start loop
 	draw_set_font(-1) //reseta a fonte após as iteracoes
-	
-	//show_debug_message(str_arr)
+
+	//============================================================|| END OF CREATION ||============================================================
 	
 	static draw = function(_x, _y) {
+		var _cur_font = draw_get_font()
 		for (var i = 0; i < str_size; i++) {		
 			#region effects
-			var _fx_data = str_arr[i][str_data.fx]
+			//show_message(str_arr)
 
 			//wave			
-			if (bitmap_read(_fx_data, str_fx.wave)) {
+			if (str_arr[i][str_data.fx][str_fx.wave]) {
 				var _wave_ampl	= 2
 				var _wave_freq	= 5
 				var _wave_spd	= 0.15
@@ -312,16 +345,16 @@ function letrator_add_text(_font, _string, _sep, _w = infinity, _col, _alph) con
 			}
 			
 			//rainbow
-			if (bitmap_read(_fx_data, str_fx.rainbow)) {
+			if (str_arr[i][str_data.fx][str_fx.rainbow]) {
 				var _hue_spd	= 3
-				var _hue_freq	= 10
+				var _hue_freq	= 0
 				var _sat		= 255*0.7
 				var _hue		= (current_time*(_hue_spd*0.05)+(i*_hue_freq)) mod 255
 				str_arr[i][str_data.col] = make_color_hsv(_hue, _sat, 255)
 			}
 			
 			//shake
-			if (bitmap_read(_fx_data, str_fx.shake)) {
+			if (str_arr[i][str_data.fx][str_fx.shake]) {
 				var _shk_str	= 1.00
 				var _shk_x		= random_range(-_shk_str, _shk_str)
 				var _shk_y		= random_range(-_shk_str, _shk_str)
@@ -330,7 +363,7 @@ function letrator_add_text(_font, _string, _sep, _w = infinity, _col, _alph) con
 			}
 			
 			//wobble		
-			if (bitmap_read(_fx_data, str_fx.wobble)) {
+			if (str_arr[i][str_data.fx][str_fx.wobble]) {
 				var _wobble_ampl= 16
 				var _wobble_freq= 0
 				var _wobble_spd	= 0.1
@@ -342,9 +375,9 @@ function letrator_add_text(_font, _string, _sep, _w = infinity, _col, _alph) con
 			
 			switch (str_arr[i][str_data.type]) {
 				case str_type.char:
-					var _cur_font = draw_get_font()
 					if (str_arr[i][str_data.fnt] != _cur_font) {
 						draw_set_font(str_arr[i][str_data.fnt])
+						_cur_font = str_arr[i][str_data.fnt]
 					}
 					draw_text_transformed_color(
 						_x+str_arr[i][str_data.x]+str_arr[i][str_data.xoff],
@@ -361,7 +394,6 @@ function letrator_add_text(_font, _string, _sep, _w = infinity, _col, _alph) con
 					)
 				break;
 				case str_type.sprite:
-					show_debug_message("tentando desenhar sprite")
 					draw_sprite_ext(
 						str_arr[i][str_data.value],
 						0,	//no animations yet :(
@@ -375,17 +407,20 @@ function letrator_add_text(_font, _string, _sep, _w = infinity, _col, _alph) con
 					)
 				break;
 			}
-			draw_rectangle_color(
+			
+			//-----------------------------------DEBUG-----------------------------------
+			if global.debug draw_rectangle_color(
 				_x+str_arr[i][str_data.x],
 				_y+str_arr[i][str_data.y],
 				_x+str_arr[i][str_data.x]+string_width(str_arr[i][str_data.value])*str_arr[i][str_data.scl]-1,
-				_y+str_arr[i][str_data.y]+string_height(str_arr[i][str_data.value])*str_arr[i][str_data.scl],
+				_y+str_arr[i][str_data.y]+string_height(str_arr[i][str_data.value])*str_arr[i][str_data.scl]-1,
 				c_lime,
 				c_lime,
 				c_lime,
 				c_lime,
 				true
 			)
+			//---------------------------------------------------------------------------
 		}//end loop
 		draw_set_font(-1)
 	}
@@ -413,10 +448,12 @@ function bitmap_read(_map, _index) {
 	return (_map & 1<<_index)>>_index
 }
 
-function bitmap_array(_map, _minimum_size = 8) {
+
+///@func bitmap_array(map, [minimum_size])
+function bitmap_array(_map) {
 	var _len
-	if (_map == 0) {
-		_len = _minimum_size
+	if (argument_count > 1) {
+		_len = argument[1]
 	} else {
 		_len = floor(log2(_map))+1	
 	}	
@@ -453,5 +490,16 @@ function hex(string) {
 	}
 	//retorna em RGB pq >gamemaker
 	return (result>>16 & 0xff) | (result<<16 & 0xff0000) | (result & 0xff00);;
+}
+
+function fastsin(_x) { //not a shit fast
+	var t = _x*0.15915
+	t = (t - floor(t))
+	
+	if (t < 0.5) {
+		return (-16*t*t)+(8*t)
+	} else {
+		return (16*t*t)-(16*t)-(8*t)+8
+	}
 }
 

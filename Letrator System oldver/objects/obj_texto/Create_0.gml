@@ -1,6 +1,6 @@
 show_debug_overlay(true)
 
-var _str4 = @"[wave]
+var _str4 = @"[wave][scale,.4]
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA[/n]
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA[/n]
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA[/n]
@@ -8,17 +8,16 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA[/n]
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA[/n]
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA[/n]
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA[/n]
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA[/n][rainbow]
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA[/n]
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA[/n]
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA[/n]
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA[/n]
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA[/n][shake]
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA[/n]
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA[/n]
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA[/n]
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA[/n]
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA[/n]
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA[/n]
-"
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA[/n][/clear]
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA[/n]"
 
 var _str1 = @"
 Texto [wave]animado!!![/n][/wave]
@@ -55,9 +54,12 @@ ABCDEFGHIJKLMN[/n]
 OPQRSTUVWXYZ [/n]
 [/clear][/f][wobble][#ff5a00][fnt_05]Let's Groove
 "
+global.debug = false
 
 var _str5 = "[fnt_02][spr_coin] RATINHOO!![/n][scale,.4]RATINHOO!![/n][scale,.5]RATINHOO!![/n][scale,.6]RATINHOOOOO[scale,.4]OOOOO[scale,.8]OO[scale,.6]OOOO!![/n][scale,.7][rainbow][fnt_05]RATINHOO!![/n][scale,.8]RATINHOO!![/n][scale,.4]RATINHOO!![/n][scale,.8][fnt_01][/rainbow][#ff4444]RATINHOO!![/n][scale,.7]"
-var _str6 = "[scale,.4][rainbow][wave]The quick brow fox jump over the lazy dog"
-text[0] = new letrator_add_text(fnt_01, _str6, 2,, c_white, 1)
+var _str6 = "[scale, .6]Lorem Ipsum is simply dummy text of the printing and typesetting industry."
+
+var _str7 = "[scale,0.4]Lorem Ipsum is simply dummy text 123456789123456789123456789123456789 of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
+text[0] = new letrator_add_text(fnt_01, _str7, 0, 230, c_white, 1)
 
 //show_message(real("c_red"))
